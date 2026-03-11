@@ -4,14 +4,11 @@
   "description": "Express, sass and mustache boilerplate",
   "main": "app.js",
   "scripts": {
-    "compile:sass": "node-sass sass/main.scss public/css/main.css -w",
-    "start": "node-sass sass/main.scss public/css/main.css && nodemon app.js"
+    "compile:sass": "sass sass/main.scss public/css/main.css --watch",
+    "start": "sass sass/main.scss:public/css/main.css --no-source-map && nodemon app.js"
   },
   "author": "Jhonatan Tomimatsu",
   "license": "ISC",
-  "devDependencies": {
-    "node-sass": "^4.9.4"
-  },
   "dependencies": {
     "body-parser": "^1.19.0",
     "dotenv": "^6.0.0",
@@ -21,5 +18,8 @@
     "nodemon": "^1.18.4",
     "pg": "^7.14.0",
     "serve-favicon": "^2.5.0"
+  },
+  "devDependencies": {
+    "sass": "^1.98.0"
   }
 }

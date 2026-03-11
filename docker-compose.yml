@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: ebot-db
+    environment:
+      POSTGRES_USER: ${DB_USER:-ebot_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-ebot_password}
+      POSTGRES_DB: ${DB_NAME:-ebot}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-ebot_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: ebot-app
+    environment:
+      PORT: ${PORT:-3000}
+      DB_USER: ${DB_USER:-ebot_user}
+      DB_PASSWORD: ${DB_PASSWORD:-ebot_password}
+      DB_HOST: postgres
+      DB_NAME: ${DB_NAME:-ebot}
+      DB_PORT: 5432
+      NODE_ENV: ${NODE_ENV:-development}
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: npm start
+
+volumes:
+  postgres_data:
