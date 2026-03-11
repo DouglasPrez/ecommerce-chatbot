@@ -1,6 +1,6 @@
 FROM node:14-alpine
 
-# Instalar dependencias del sistema para node-sass
+# Instalar dependencias del sistema
 RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
@@ -10,8 +10,8 @@ RUN npm install
 
 COPY . .
 
-# Compilar Sass sin bloquear si falla
-RUN npm run compile:sass --no-watch || echo "Sass compilation skipped"
+# Compilar Sass una vez (sin watch)
+RUN npx sass sass/main.scss:public/css/main.css --no-source-map || echo "CSS skipped"
 
 EXPOSE 3000
 CMD ["npm", "start"]
